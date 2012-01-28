@@ -95,5 +95,5 @@ if __name__ == "__main__":
 
   #Example usage:
   ofc = OfflineFileCache (cachedir, cachetime, fetchdata, "0459", True)
-  data, fromcache ofc.get('0459')
+  data, fromcache = ofc.get('0459')
   print data
