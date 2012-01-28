@@ -88,7 +88,7 @@ class OfflineFileCache:
 if __name__ == "__main__":
   #Example data:
   cachedir="/tmp/pyyrlib-cache/"
-  cachetime=60
+  cachetime=1200
 
   def fetchdata(id = "0000"):
     return "It's sunny at " + id
