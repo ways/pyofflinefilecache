@@ -2,12 +2,16 @@
 
 import os, time, datetime
 
-#offline disk cache
-cachedir="/tmp/pyyrlib-cache/"
-cachetime=60
+#Example data:
+#cachedir="/tmp/pyyrlib-cache/"
+#cachetime=60
 
-def fetchdata(id = "0000"):
-  return "It's sunny at " + id
+#def fetchdata(id = "0000"):
+#  return "It's sunny at " + id
+
+#Example usage:
+#ofc = OfflineFileCache (cachedir, cachetime, fetchdata)
+#print ofc.get('0458')
 
 
 class OfflineFileCache:
@@ -71,7 +75,3 @@ class OfflineFileCache:
 
       return data
 
-print "Now:"
-print datetime.datetime.fromtimestamp(time.time())
-ofc = OfflineFileCache (cachedir, cachetime, fetchdata)
-print ofc.get('0458')
