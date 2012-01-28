@@ -71,7 +71,7 @@ class OfflineFileCache:
         if self.verbose:
           print "Filetime ", filetime
           print "Returning cached data for", id
-        return f.read()
+        return f.read(), True
     else:
       if self.verbose:
         print "Resetting contents of file"
@@ -82,7 +82,7 @@ class OfflineFileCache:
       if self.verbose:
         print "Returning fresh data for", id
         #print data
-      return data
+      return data, False
 
 
 if __name__ == "__main__":
@@ -95,5 +95,5 @@ if __name__ == "__main__":
 
   #Example usage:
   ofc = OfflineFileCache (cachedir, cachetime, fetchdata, "0459", True)
-  print ofc.get('0459')
-
+  data, fromcache ofc.get('0459')
+  print data
