@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8; -*-
 
-import os, time, datetime
+import os, time, datetime, codecs
 
 #Example data:
 #cachedir="/tmp/pyyrlib-cache/"
@@ -10,7 +11,7 @@ import os, time, datetime
 #  return "It's sunny at " + id
 
 #Example usage:
-#ofc = OfflineFileCache (cachedir, cachetime, fetchdata)
+#ofc = OfflineFileCache (cachedir, cachetime, fetchdata, fetcharg, False)
 #print ofc.get('0458')
 
 
@@ -18,60 +19,76 @@ class OfflineFileCache:
   ''' A class storing data as files for later retreval based on timestamp.
       First line of cache file contains timestamp. Rest is text data. '''
 
-  def __init__(self, cachedir, cachetime, fetchfunction, verbose = False):
+  def __init__(self, cachedir, cachetime, fetchfunction, fetcharg = False, verbose = False):
     self.fetchfunction = fetchfunction
+    self.fetcharg = fetcharg
     self.cachetime = cachetime
     self.cachedir = cachedir
     self.verbose = verbose
 
-    if not os.path.exists(cachedir):
+    if not os.path.exists(self.cachedir):
       try:
-        os.mkdir(cachedir, 0700)
+        os.mkdir(self.cachedir, 0700)
       except FileError as e:
-        print "Error writing to dir ", cachedir, e
+        print "Error writing to dir ", self.cachedir, e
 
 
   def set(self, id, data):
+    #print data.read()
     try:
-      with open(cachedir + id, 'w') as f:
-        f.write(str(time.time()) + "\n" + data)
+      #with codecs.open(self.cachedir + id, 'w', encoding='utf-8') as f:
+      with codecs.open(self.cachedir + id, 'w') as f:
+        f.write(str(time.time()) + "\n" + data )
     except IOError as e:
-      print "OfflineFileCache: Error opening file " + cachedir + id
-      return False
-
+      print "OfflineFileCache: Error opening file " + self.cachedir + id
+      #return False
 
   def status(self, id):
     try:
-      with open(cachedir + id, 'r') as f:
-        filetime = float(f.readline())
+      with codecs.open(self.cachedir + id, 'r') as f:
+        firstline = f.readline()
+        filetime = float(firstline)
     except IOError as e:
       if self.verbose:
-        print "Error reading file " + cachedir + id
+        print "Error reading file " + self.cachedir + id + str(e)
       return False
+    except ValueError as e:
+      if self.verbose:
+        print "Error converting time from " + str(firstline)
+        return False
 
     if self.verbose:
       print "Time from file: " + str(datetime.datetime.fromtimestamp(filetime))
 
-    if filetime > (time.time() - cachetime):
+    if filetime > (time.time() - self.cachetime):
       if self.verbose:
-        print "File is fresh, remaining " + str((filetime + cachetime) - time.time())
+        print "File is fresh, remaining " + str((filetime + self.cachetime) - time.time())
       return True
     else:
       if self.verbose:
         print "File is sour, over time: " + str(time.time() - filetime)
       return False
 
+
   def get(self, id):
     if self.status(id):
-      with open(cachedir + id, 'r') as f:
+      #with codecs.open(self.cachedir + id, 'r', encoding='utf-8') as f:
+      with codecs.open(self.cachedir + id, 'r') as f:
         filetime = f.readline()
+        if self.verbose:
+          print "Filetime ", filetime
+          print "Returning cached data for", id
+          print f.read()
         return f.read()
     else:
       if self.verbose:
-        print "Reset contents of file"
-      data = self.fetchfunction()
-      if not self.set(id, data):
-        return False
+        print "Resetting contents of file"
+      data = self.fetchfunction(self.fetcharg)
+      #print data.read()
 
-      return data
+      self.set(id, data.read())
 
+      if self.verbose:
+        print "Returning fresh data for", id
+        print data.read()
+      return data.read()
