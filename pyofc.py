@@ -1,18 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8; -*-
 
+__version__ = '0.1'
+__url__ = 'https://github.com/ways/pyofflinefilecache'
+__license__ = 'GPL License'
+
 import os, time, datetime, codecs
-
-#Example data:
-#cachedir="/tmp/pyyrlib-cache/"
-#cachetime=60
-
-#def fetchdata(id = "0000"):
-#  return "It's sunny at " + id
-
-#Example usage:
-#ofc = OfflineFileCache (cachedir, cachetime, fetchdata, fetcharg, False)
-#print ofc.get('0458')
 
 
 class OfflineFileCache:
@@ -78,17 +71,29 @@ class OfflineFileCache:
         if self.verbose:
           print "Filetime ", filetime
           print "Returning cached data for", id
-          print f.read()
         return f.read()
     else:
       if self.verbose:
         print "Resetting contents of file"
       data = self.fetchfunction(self.fetcharg)
-      #print data.read()
 
-      self.set(id, data.read())
+      self.set(id, data)
 
       if self.verbose:
         print "Returning fresh data for", id
-        print data.read()
-      return data.read()
+        #print data
+      return data
+
+
+if __name__ == "__main__":
+  #Example data:
+  cachedir="/tmp/pyyrlib-cache/"
+  cachetime=60
+
+  def fetchdata(id = "0000"):
+    return "It's sunny at " + id
+
+  #Example usage:
+  ofc = OfflineFileCache (cachedir, cachetime, fetchdata, "0459", True)
+  print ofc.get('0459')
+
