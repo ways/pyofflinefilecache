@@ -1,0 +1,2 @@
+A class storing data as files for later retreval based on timestamp.
+First line of cache file contains timestamp. Rest is text data.
