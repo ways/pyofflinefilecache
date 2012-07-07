@@ -27,6 +27,7 @@ class OfflineFileCache:
 
 
   def set(self, id, data):
+    id = self.escape_string(id)
     #print data.read()
     try:
       #with codecs.open(self.cachedir + id, 'w', encoding='utf-8') as f:
@@ -37,6 +38,7 @@ class OfflineFileCache:
       #return False
 
   def status(self, id):
+    id = self.escape_string(id)
     try:
       with codecs.open(self.cachedir + id, 'r') as f:
         firstline = f.readline()
@@ -64,6 +66,7 @@ class OfflineFileCache:
 
 
   def get(self, id):
+    id = self.unescape_string(id)
     if self.status(id):
       #with codecs.open(self.cachedir + id, 'r', encoding='utf-8') as f:
       with codecs.open(self.cachedir + id, 'r') as f:
@@ -85,6 +88,25 @@ class OfflineFileCache:
       return data, False
 
 
+    def escape_string(str):
+      if len(str) > 20:
+        str = str[:20]
+      str = str.strip()\
+      .replace('..','')\
+      .replace('~','£')\
+      .replace('/','_')
+
+      return newstr
+
+    def unescape_string(str):
+      str = \
+      .replace('£','~')\
+      .replace('_','/')
+
+      return newstr
+
+
+
 if __name__ == "__main__":
   #Example data:
   cachedir="/tmp/pyyrlib-cache/"
@@ -96,4 +118,4 @@ if __name__ == "__main__":
   #Example usage:
   ofc = OfflineFileCache (cachedir, cachetime, fetchdata, "0459", True)
   data, fromcache = ofc.get('0459')
-  print data
+  print "data: " + str(data)
