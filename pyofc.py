@@ -88,22 +88,22 @@ class OfflineFileCache:
       return data, False
 
 
-    def escape_string(str):
-      if len(str) > 20:
-        str = str[:20]
-      str = str.strip()\
-      .replace('..','')\
-      .replace('~','£')\
-      .replace('/','_')
+  def escape_string(self, str):
+    if len(str) > 20:
+      str = str[:20]
+    str = str.strip()\
+    .replace('..','')\
+    .replace('~','£')\
+    .replace('/','_')
 
-      return newstr
+    return str
 
-    def unescape_string(str):
-      str = \
-      .replace('£','~')\
-      .replace('_','/')
+  def unescape_string(self, str):
+    str = str\
+    .replace('£','~')\
+    .replace('_','/')
 
-      return newstr
+    return str
 
 
 
