@@ -29,6 +29,9 @@ class OfflineFileCache:
 
 
     def set(self, id, data):
+        if not data:
+            return False
+            
         id = self.escape_string(id)
         print (data)
         try:
